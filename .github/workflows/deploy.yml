@@ -14,6 +14,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  workflows: write # Added workflow permission for PAT
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
@@ -37,7 +38,7 @@ jobs:
           node-version: 18
           cache: 'npm'
       - name: Install dependencies
-        run: npm ci
+        run: npm install
       - name: Build
         run: npm run build
       - name: Setup Pages
