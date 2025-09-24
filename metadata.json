@@ -1,0 +1,5 @@
+{
+  "name": "Arena AI Chatbot",
+  "description": "An AI chatbot to help employees search for and understand internal company regulations. It features a clean, intuitive interface and a secure admin panel for managing regulation documents.",
+  "requestFramePermissions": []
+}
