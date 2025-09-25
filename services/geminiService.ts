@@ -1,9 +1,19 @@
 import { GoogleGenAI } from "@google/genai";
 import type { RegulationFile } from "../types";
 
-// Fix: Per coding guidelines, API_KEY is assumed to be available in process.env.
-// The API key checks have been removed, and a non-null assertion is used for type safety.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+// -------------------------------------------------------------------
+// VITE_GEMINI_API_KEY는 빌드 시점에 Vite에 의해 실제 키로 대체됩니다.
+// 프로젝트 루트에 .env 파일을 만들고 VITE_GEMINI_API_KEY="실제-API-키" 형식으로 추가하세요.
+// ⚠️ 경고: .env 파일은 절대 외부에 공유하거나 깃허브에 올리면 안 됩니다.
+// -------------------------------------------------------------------
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+
+if (!API_KEY || API_KEY === "여기에-실제-GEMINI-API-키를-붙여넣으세요") {
+  alert("경고: Gemini API 키가 설정되지 않았습니다. .env 파일을 확인해주세요. 챗봇이 작동하지 않을 수 있습니다.");
+  console.error("VITE_GEMINI_API_KEY environment variable not set.");
+}
+
+const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 export const getChatbotResponse = async (question: string, regulations: RegulationFile[]): Promise<string> => {
   const model = 'gemini-2.5-flash';
