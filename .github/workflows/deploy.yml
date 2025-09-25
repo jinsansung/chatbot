@@ -14,7 +14,6 @@ permissions:
   contents: read
   pages: write
   id-token: write
-  workflows: write # Added workflow permission for PAT
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
@@ -42,6 +41,8 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Build
+        env:
+          VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
         run: npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v5
