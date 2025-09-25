@@ -1,26 +1,21 @@
 import { GoogleGenAI } from "@google/genai";
 import type { RegulationFile } from "../types";
 
-// --- API 키 설정 ---
-// 아래 'YOUR_API_KEY' 부분을 실제 발급받은 Gemini API 키로 교체해주세요.
-// 중요: 이 키는 외부에 노출되지 않도록 주의해야 합니다.
-// 인트라넷과 같이 통제된 환경에서 사용하시는 것을 감안하여 수정했지만,
-// 일반 웹에 배포할 경우 보안을 위해 서버 측에서 API를 호출하거나 Vite의 환경 변수 기능을 사용하는 것을 강력히 권장합니다.
-const API_KEY = 'AIzaSyAWn0o_RguVg3VIrH7_tS4wEfCZfj1mc_Q';
-
-// API 키가 설정되었는지 확인
-if (!API_KEY || API_KEY === 'YOUR_API_KEY') {
-  console.error("Gemini API 키가 설정되지 않았습니다. services/geminiService.ts 파일에서 API_KEY를 설정해주세요.");
-}
+// =================================================================================
+// 중요: 아래 "YOUR_API_KEY_HERE" 부분에 실제 Google Gemini API 키를 입력하세요.
+// 이 방식은 간단하지만 API 키가 외부에 노출될 수 있습니다.
+// 이 챗봇을 내부망(인트라넷)이 아닌 외부 인터넷에 공개할 경우,
+// 보안을 위해 서버에서 API를 호출하는 방식으로 변경하는 것을 강력히 권장합니다.
+// =================================================================================
+const API_KEY = "AIzaSyAWn0o_RguVg3VIrH7_tS4wEfCZfj1mc_Q";
 
 const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 export const getChatbotResponse = async (question: string, regulations: RegulationFile[]): Promise<string> => {
-  // 함수 호출 시점에서도 API 키 유효성 검사
-  if (!API_KEY || API_KEY === 'YOUR_API_KEY') {
-    return "API 키가 설정되지 않았습니다. 관리자에게 문의하거나 `services/geminiService.ts` 파일에서 API 키를 직접 설정해주세요.";
+  if (!API_KEY || API_KEY === "YOUR_API_KEY_HERE") {
+    return "Gemini API 키가 설정되지 않았습니다. services/geminiService.ts 파일에서 API_KEY를 설정해주세요.";
   }
-
+  
   const model = 'gemini-2.5-flash';
 
   const regulationsContext = regulations.map(reg => `--- 문서: ${reg.name} ${reg.link ? `(링크: ${reg.link})` : ''} ---\n${reg.content}`).join('\n\n');
@@ -57,8 +52,8 @@ ${question}
     return response.text;
   } catch (error) {
     console.error("Gemini API Error:", error);
-    if (error instanceof Error && error.message.includes('API key not valid')) {
-       return "API 키가 올바르지 않은 것 같습니다. `services/geminiService.ts` 파일에서 키를 다시 확인해주세요.";
+    if (error instanceof Error && (error.message.includes('API key not valid') || error.message.includes('API key is missing'))) {
+       return "입력하신 Gemini API 키가 유효하지 않습니다. services/geminiService.ts 파일을 다시 확인해주세요.";
     }
     return "죄송합니다, 답변을 생성하는 중에 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
   }
