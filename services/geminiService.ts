@@ -1,13 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
 import type { RegulationFile } from "../types";
 
-// Vite의 표준 방식인 import.meta.env를 사용하여 환경 변수를 가져옵니다.
-// 이 방식은 빌드 시점에 Vite가 실제 키 값으로 안전하게 교체해줍니다.
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-
-if (!apiKey) {
-  throw new Error("VITE_GEMINI_API_KEY 환경 변수가 설정되지 않았습니다. .env 파일을 확인하거나 배포 환경의 비밀 설정을 확인해주세요.");
-}
+// Vite's 'define' feature in vite.config.ts will replace `process.env.API_KEY`
+// with the actual API key string during the build process.
+const apiKey = process.env.API_KEY;
 
 const ai = new GoogleGenAI({ apiKey });
 
