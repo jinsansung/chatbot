@@ -1,9 +1,13 @@
 import { GoogleGenAI } from "@google/genai";
 import type { RegulationFile } from "../types";
 
-// Vite's 'define' feature in vite.config.ts will replace `process.env.API_KEY`
+// Vite automatically replaces `import.meta.env.VITE_GEMINI_API_KEY`
 // with the actual API key string during the build process.
-const apiKey = process.env.API_KEY;
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
+if (!apiKey) {
+  throw new Error("VITE_GEMINI_API_KEY is not set in the environment.");
+}
 
 const ai = new GoogleGenAI({ apiKey });
 
