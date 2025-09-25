@@ -1,20 +1,12 @@
 import { GoogleGenAI } from "@google/genai";
 import type { RegulationFile } from "../types";
 
-// =================================================================================
-// 중요: 아래 "YOUR_API_KEY_HERE" 부분에 실제 Google Gemini API 키를 입력하세요.
-// 이 방식은 간단하지만 API 키가 외부에 노출될 수 있습니다.
-// 이 챗봇을 내부망(인트라넷)이 아닌 외부 인터넷에 공개할 경우,
-// 보안을 위해 서버에서 API를 호출하는 방식으로 변경하는 것을 강력히 권장합니다.
-// =================================================================================
-const API_KEY = "AIzaSyAWn0o_RguVg3VIrH7_tS4wEfCZfj1mc_Q";
-
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+// Fix: Per guidelines, use process.env.API_KEY directly and assume it's configured.
+// This resolves the TypeScript error related to `import.meta.env`.
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const getChatbotResponse = async (question: string, regulations: RegulationFile[]): Promise<string> => {
-  if (!API_KEY || API_KEY === "YOUR_API_KEY_HERE") {
-    return "Gemini API 키가 설정되지 않았습니다. services/geminiService.ts 파일에서 API_KEY를 설정해주세요.";
-  }
+  // Fix: Per guidelines, removed check for API key existence as it's assumed to be present.
   
   const model = 'gemini-2.5-flash';
 
@@ -52,9 +44,7 @@ ${question}
     return response.text;
   } catch (error) {
     console.error("Gemini API Error:", error);
-    if (error instanceof Error && (error.message.includes('API key not valid') || error.message.includes('API key is missing'))) {
-       return "입력하신 Gemini API 키가 유효하지 않습니다. services/geminiService.ts 파일을 다시 확인해주세요.";
-    }
+    // Fix: Per guidelines, do not prompt user about API key issues. Return a generic error message.
     return "죄송합니다, 답변을 생성하는 중에 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
   }
 };
